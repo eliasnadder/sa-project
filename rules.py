@@ -1,7 +1,7 @@
 """Senet game rules - valid moves, blockades, protection, special houses."""
 
 from board import (
-    HOUSE_BEAUTY, HOUSE_WATER, HOUSE_REBIRTH,
+    HOUSE_OF_HAPPINESS, HOUSE_WATER, HOUSE_REBIRTH,
     HOUSE_THREE_TRUTHS, HOUSE_RE_ATUM, HOUSE_HORUS,
     BOARD_SIZE, OFF_BOARD, print_message
 )
@@ -28,8 +28,8 @@ def get_valid_moves(board, player, roll):
             valid_moves.append((start_pos, OFF_BOARD))
             continue
 
-        # --- RULE: House of Beauty ---
-        if not _can_pass_beauty(start_pos, target_pos, roll):
+        # --- RULE: House of happiness ---
+        if not _can_pass_happiness(start_pos, target_pos, roll):
             continue
 
         # --- RULE: Occupancy and Capturing ---
@@ -49,7 +49,7 @@ def get_valid_moves(board, player, roll):
 def _can_bear_off(start_pos, roll, target_pos):
     """Check if a piece can bear off the board."""
     # Can only bear off if already at position 25 or beyond
-    if start_pos < HOUSE_BEAUTY:
+    if start_pos < HOUSE_OF_HAPPINESS:
         return False
 
     # Special exit house rules for positions 27, 28, 29
@@ -64,12 +64,12 @@ def _can_bear_off(start_pos, roll, target_pos):
     return target_pos == OFF_BOARD or (start_pos <= HOUSE_WATER and target_pos > OFF_BOARD)
 
 
-def _can_pass_beauty(start_pos, target_pos, roll):
-    """Check if move respects House of Beauty rules."""
-    # Must land exactly on House of Beauty when passing through it
-    if start_pos < HOUSE_BEAUTY and target_pos > HOUSE_BEAUTY:
-        # Cannot jump over House of Beauty
-        if start_pos + roll != HOUSE_BEAUTY:
+def _can_pass_happiness(start_pos, target_pos, roll):
+    """Check if move respects House of Happiness rules."""
+    # Must land exactly on House of Happiness when passing through it
+    if start_pos < HOUSE_OF_HAPPINESS and target_pos > HOUSE_OF_HAPPINESS:
+        # Cannot jump over House of Happiness
+        if start_pos + roll != HOUSE_OF_HAPPINESS:
             return False
     return True
 
@@ -85,11 +85,6 @@ def _can_land_on(board, target_pos, player, opponent):
     if target_content == opponent:
         # --- RULE: Protection ---
         if _is_protected(board, target_pos, opponent):
-            return False
-
-        # --- RULE: Safe Houses ---
-        # Pieces on the last 5 squares (indices 25-29) are safe from attack
-        if target_pos >= HOUSE_BEAUTY:
             return False
 
     return True
