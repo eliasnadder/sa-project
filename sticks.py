@@ -19,10 +19,10 @@ def throw_sticks():
         return 5  # All round sides up = 5
     return score
 
-
-def grants_extra_turn(roll):
-    """
-    Returns True if the roll grants an extra turn.
-    Kendall's rules: 1, 4, and 5 grant an extra turn.
-    """
-    return roll in [1, 4, 5]
+#! Blocked until finish search
+# def grants_extra_turn(roll):
+#     """
+#     Returns True if the roll grants an extra turn.
+#     Kendall's rules: 1, 4, and 5 grant an extra turn.
+#     """
+#     return roll in [1, 4, 5]
