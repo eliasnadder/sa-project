@@ -28,7 +28,7 @@ class Colors:
 
 # Special house indices
 HOUSE_REBIRTH = 14      # Square 15
-HOUSE_BEAUTY = 25       # Square 26
+HOUSE_OF_HAPPINESS = 25       # Square 26
 HOUSE_WATER = 26        # Square 27
 HOUSE_THREE_TRUTHS = 27  # Square 28
 HOUSE_RE_ATUM = 28      # Square 29
@@ -46,9 +46,9 @@ def create_initial_board():
     Setup: Alternating on squares 1-10 (Indices 0-9)
     """
     board = [None] * BOARD_SIZE
-    for i in range(0, 10, 2):
-        board[i] = 'X'      # Squares 1, 3, 5, 7, 9
-        board[i + 1] = 'O'  # Squares 2, 4, 6, 8, 10
+    for i in range(0, 13, 2):
+        board[i] = 'X'      # Squares 1, 3, 5, 7, 9, 11, 13
+        board[i + 1] = 'O'  # Squares 2, 4, 6, 8, 10, 12, 14
     return board
 
 
@@ -93,7 +93,7 @@ def _get_cell_display(val, idx):
     if idx == HOUSE_REBIRTH:
         special = f"{c.GREEN}R{c.RESET}"
         bg_color = c.DIM
-    elif idx == HOUSE_BEAUTY:
+    elif idx == HOUSE_OF_HAPPINESS:
         special = f"{c.YELLOW}B{c.RESET}"
         bg_color = c.DIM
     elif idx == HOUSE_WATER:
@@ -191,10 +191,6 @@ def print_board(board):
 def print_roll(roll):
     """Print the dice roll in a fancy way."""
     c = Colors
-    stick_art = {
-        1: f"{c.WHITE}│{c.RESET}",
-        0: f"{c.YELLOW}║{c.RESET}"
-    }
     print(f"\n  {c.BOLD}🎲 THROWING STICKS...{c.RESET}")
     print(f"  {c.BOLD}{c.GREEN}Roll: {roll}{c.RESET}")
 
