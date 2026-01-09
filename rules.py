@@ -1,5 +1,6 @@
 """Senet game rules - valid moves, blockades, protection, special houses."""
 
+from player import Players
 from board import (
     HOUSE_OF_HAPPINESS, HOUSE_WATER, HOUSE_REBIRTH,
     HOUSE_THREE_TRUTHS, HOUSE_RE_ATUM, HOUSE_HORUS,
@@ -12,7 +13,6 @@ def get_valid_moves(board, player, roll):
     Determines all legal moves for the current player given a roll.
     Implements constraints like Blockades, Protection, and Special Houses.
     """
-    opponent = 'O' if player == 'X' else 'X'
     valid_moves = []
 
     # Find all pieces for the current player
@@ -33,11 +33,7 @@ def get_valid_moves(board, player, roll):
             continue
 
         # --- RULE: Occupancy and Capturing ---
-        if not _can_land_on(board, target_pos, player, opponent):
-            continue
-
-        # --- RULE: Blockades ---
-        if _is_path_blocked(board, start_pos, target_pos, roll, opponent):
+        if not _can_land_on(board, target_pos, player):
             continue
 
         # If we passed all checks, it's a valid move
@@ -52,16 +48,21 @@ def _can_bear_off(start_pos, roll, target_pos):
     if start_pos < HOUSE_OF_HAPPINESS:
         return False
 
-    # Special exit house rules for positions 27, 28, 29
-    if start_pos == HOUSE_THREE_TRUTHS and roll != 3:
-        return False  # House of Three Truths needs roll of 3
-    if start_pos == HOUSE_RE_ATUM and roll != 2:
-        return False  # House of Re-Atum needs roll of 2
-    if start_pos == HOUSE_HORUS and roll != 1:
-        return False  # House of Horus needs roll of 1
+    # Special exit house rules for positions 27, 28, 29, 30
+    # House of Three Truths needs roll of 3
+    if start_pos == HOUSE_THREE_TRUTHS:
+        return roll == 3
 
-    # For other positions (25, 26), any roll that reaches 30+ is valid
-    return target_pos == OFF_BOARD or (start_pos <= HOUSE_WATER and target_pos > OFF_BOARD)
+    # House of Re-Atum needs roll of 2
+    if start_pos == HOUSE_RE_ATUM:
+        return roll == 2
+
+    # House of Horus
+    if start_pos == HOUSE_HORUS:
+        return True
+
+    # For other positions
+    return target_pos == OFF_BOARD or (start_pos < HOUSE_WATER and target_pos > OFF_BOARD)
 
 
 def _can_pass_happiness(start_pos, target_pos, roll):
@@ -74,61 +75,18 @@ def _can_pass_happiness(start_pos, target_pos, roll):
     return True
 
 
-def _can_land_on(board, target_pos, player, opponent):
+def _can_land_on(board, target_pos, player):
     """Check if a piece can land on the target position."""
+    if target_pos >= BOARD_SIZE:
+        return True
+
     target_content = board[target_pos]
 
     # Cannot land on own piece
     if target_content == player:
         return False
 
-    if target_content == opponent:
-        # --- RULE: Protection ---
-        if _is_protected(board, target_pos, opponent):
-            return False
-
     return True
-
-
-def _is_protected(board, pos, player):
-    """Check if a piece at pos is protected by adjacent friendly pieces."""
-    # Check previous neighbor
-    if pos > 0 and board[pos - 1] == player:
-        return True
-    # Check next neighbor
-    if pos < BOARD_SIZE - 1 and board[pos + 1] == player:
-        return True
-    return False
-
-
-def _is_path_blocked(board, start_pos, target_pos, roll, opponent):
-    """Check if the path is blocked by a blockade (3+ consecutive opponent pieces)."""
-    if roll <= 1:
-        return False
-
-    # Check squares between start and target
-    for i in range(start_pos + 1, target_pos):
-        if board[i] == opponent:
-            # Check left neighbors
-            left_count = 0
-            idx = i - 1
-            while idx >= 0 and board[idx] == opponent:
-                left_count += 1
-                idx -= 1
-
-            # Check right neighbors
-            right_count = 0
-            idx = i + 1
-            while idx < BOARD_SIZE and board[idx] == opponent:
-                right_count += 1
-                idx += 1
-
-            # If total consecutive group >= 3
-            if (left_count + 1 + right_count) >= 3:
-                return True
-
-    return False
-
 
 def apply_move(board, start_pos, target_pos):
     """
@@ -142,28 +100,44 @@ def apply_move(board, start_pos, target_pos):
     # Handle Bearing Off
     if target_pos == OFF_BOARD:
         print_message(f"Player {piece} bears off a piece! 🏆", "success")
-        return board
 
-    # Handle Attack (Swap)
-    if board[target_pos] is not None:
-        opponent = board[target_pos]
-        print_message(f"Attack! {piece} swaps with {opponent}.", "attack")
-        board[start_pos] = opponent  # Opponent sent back
+    else:
+        # Handle Attack (Swap)
+        if board[target_pos] is not None:
+            opponent = board[target_pos]
+            print_message(f"Attack! {piece} swaps with {opponent}.", "attack")
+            board[start_pos] = opponent  # Opponent sent back
 
-    # Place piece in new spot
-    board[target_pos] = piece
+        # Place piece in new spot
+        board[target_pos] = piece
 
-    # --- RULE: House of Water ---
-    if target_pos == HOUSE_WATER:
-        board = _handle_house_of_water(board, piece, target_pos)
+        # --- RULE: House of Water ---
+        if target_pos == HOUSE_WATER:
+            print_message(
+                f"Oh no! {piece} fell into the House of Water!", "water")
+            board = _send_to_rebirth(board, piece, target_pos)
 
+    special_danger_houses = [HOUSE_THREE_TRUTHS, HOUSE_RE_ATUM, HOUSE_HORUS]
+
+    for house_idx in special_danger_houses:
+        # Check if the square is occupied by the CURRENT player
+        if board[house_idx] == piece:
+            # If the piece is still there after the move, it means they didn't/couldn't play it.
+            # However, we must be careful: Did they JUST land there this turn?
+            # If they just landed there (target_pos == house_idx), they are safe for now.
+            if house_idx != target_pos:
+                house_name = "Three Truths" if house_idx == HOUSE_THREE_TRUTHS else \
+                             "Re-Atum" if house_idx == HOUSE_RE_ATUM else "Horus"
+
+                print_message(
+                    f"Player {piece} failed to exit {house_name}! Sent to Rebirth.", "error")
+                board = _send_to_rebirth(board, house_idx, piece)
     return board
 
 
-def _handle_house_of_water(board, piece, target_pos):
-    """Handle landing on House of Water - piece goes back to rebirth."""
-    print_message(f"Oh no! {piece} fell into the House of Water!", "water")
-    board[target_pos] = None  # Remove from Water
+def _send_to_rebirth(board, piece, target_pos):
+    """Generic function to send a piece back to House of Rebirth logic."""
+    board[target_pos] = None  # Remove
 
     # Check House of Rebirth
     rebirth_pos = HOUSE_REBIRTH
