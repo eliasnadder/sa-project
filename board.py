@@ -45,10 +45,13 @@ def create_initial_board():
     None = Empty, 'X' = Player 1, 'O' = Player 2
     Setup: Alternating on squares 1-10 (Indices 0-9)
     """
+
     board = [None] * BOARD_SIZE
-    for i in range(0, 13, 2):
-        board[i] = 'X'      # Squares 1, 3, 5, 7, 9, 11, 13
-        board[i + 1] = 'O'  # Squares 2, 4, 6, 8, 10, 12, 14
+    for i in range(0, 14):
+        if i % 2 == 0:
+            board[i] = 'X'
+        else:
+            board[i] = 'O'
     return board
 
 
@@ -70,15 +73,15 @@ def print_title():
     print(title)
 
 
-def print_legend():
+def print_legend(player, opponent):
     """Print the board legend."""
     c = Colors
-    print(f"\n{c.BOLD}  ╔══════════════════ LEGEND ══════════════════╗{c.RESET}")
-    print(f"  ║  {c.CYAN}{c.BOLD}X{c.RESET} = Player 1    {c.MAGENTA}{c.BOLD}O{c.RESET} = Player 2            ║")
+    print(f"\n{c.BOLD}  ╔══════════════════ LEGEND ═══════════════════╗{c.RESET}")
+    print(f"  ║   {c.CYAN}{c.BOLD}{player}{c.RESET} = Player 1    {c.MAGENTA}{c.BOLD}{opponent}{c.RESET} = Player 2              ║")
     print(
-        f"  ║  {c.GREEN}(R){c.RESET} Rebirth     {c.YELLOW}(B){c.RESET} Beauty              ║")
+        f"  ║  {c.GREEN}(R){c.RESET} Rebirth     {c.YELLOW}(H){c.RESET} Happiness              ║")
     print(
-        f"  ║  {c.BLUE}(W){c.RESET} Water       {c.RED}(3)(2)(1){c.RESET} Exit Houses   ║")
+        f"  ║  {c.BLUE}(W){c.RESET} Water       {c.RED}(3)(2)(1){c.RESET} Exit Houses      ║")
     print(f"  {c.BOLD}╚═════════════════════════════════════════════╝{c.RESET}\n")
 
 
@@ -88,26 +91,19 @@ def _get_cell_display(val, idx):
 
     # Determine special house marker and color
     special = ""
-    bg_color = ""
 
     if idx == HOUSE_REBIRTH:
         special = f"{c.GREEN}R{c.RESET}"
-        bg_color = c.DIM
     elif idx == HOUSE_OF_HAPPINESS:
-        special = f"{c.YELLOW}B{c.RESET}"
-        bg_color = c.DIM
+        special = f"{c.YELLOW}H{c.RESET}"
     elif idx == HOUSE_WATER:
         special = f"{c.BLUE}W{c.RESET}"
-        bg_color = c.DIM
     elif idx == HOUSE_THREE_TRUTHS:
         special = f"{c.RED}3{c.RESET}"
-        bg_color = c.DIM
     elif idx == HOUSE_RE_ATUM:
         special = f"{c.RED}2{c.RESET}"
-        bg_color = c.DIM
     elif idx == HOUSE_HORUS:
         special = f"{c.RED}1{c.RESET}"
-        bg_color = c.DIM
 
     # Determine piece display
     if val == 'X':
@@ -224,4 +220,4 @@ def print_message(msg, msg_type="info"):
         "rebirth": f"{c.GREEN}♻{c.RESET}",
     }
     icon = icons.get(msg_type, icons["info"])
-    print(f"  {icon} {msg}")
+    print(f"\n  {icon} {msg}")
