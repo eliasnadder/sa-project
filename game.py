@@ -1,7 +1,8 @@
 """Main Senet game class and game loop."""
 
+from player import PlayerType
 from board import (
-    create_initial_board, print_board, print_title, print_legend,
+    create_initial_board, print_board,
     print_roll, print_winner, print_message, OFF_BOARD, Colors
 )
 from sticks import throw_sticks
@@ -9,27 +10,22 @@ from rules import get_valid_moves, apply_move, check_win
 
 
 class SenetGame:
-    def __init__(self):
+    def __init__(self, current_player, opponent):
         self.board = create_initial_board()
-        self.current_player = 'X'
+        self.current_player = current_player
+        self.opponent = opponent
         self.game_over = False
 
-    def play(self):
+    def start_playing(self):
         c = Colors
-        print_title()
-        print_legend()
-
-        print_message("Player X vs Player O - Both Human Players", "info")
-        input(f"\n  {c.DIM}Press Enter to start...{c.RESET}")
-
         while not self.game_over:
             print_board(self.board)
-            player_color = c.CYAN if self.current_player == 'X' else c.MAGENTA
+            player_color = c.CYAN if self.current_player == PlayerType.PLAYER else c.MAGENTA
             print(
                 f"\n  {c.BOLD}{player_color}▶ Player {self.current_player}'s turn{c.RESET}")
             input(f"  {c.DIM}Press Enter to throw sticks...{c.RESET}")
 
-            # Turn loop (to handle extra turns)
+            # Main loop
             turn_active = True
             while turn_active:
                 roll = throw_sticks()
@@ -52,22 +48,7 @@ class SenetGame:
                         return
 
                     turn_active = False  # End turn after a valid move
-                    self.current_player = 'O' if self.current_player == 'X' else 'X'
-
-                #! Blocked until finish search
-                # Check for extra turn
-                # if grants_extra_turn(roll):
-                #     print_message(
-                #         f"Roll of {roll} grants an extra turn! 🎯", "success")
-                #     if not self.game_over:
-                #         print_board(self.board)
-                #         input(
-                #             f"  {c.DIM}Player {self.current_player}, press Enter for extra turn...{c.RESET}")
-                # else:
-                #     turn_active = False
-
-            # Switch Player
-            # self.current_player = 'O' if self.current_player == 'X' else 'X'
+                    self.current_player = PlayerType.OPPONENT if self.current_player == PlayerType.PLAYER else PlayerType.PLAYER
 
     def _get_player_choice(self, valid_moves):
         """Get player's move choice from available moves."""
@@ -84,7 +65,8 @@ class SenetGame:
         choice = None
         while choice is None:
             try:
-                user_input = int(input(f"  {c.BOLD}Select move index:{c.RESET} "))
+                user_input = int(
+                    input(f"  {c.BOLD}Select move index:{c.RESET} "))
                 if 0 <= user_input < len(valid_moves):
                     choice = valid_moves[user_input]
                 else:
