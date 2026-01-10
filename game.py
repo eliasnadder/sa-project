@@ -7,6 +7,7 @@ from board import (
 )
 from sticks import throw_sticks
 from rules import get_valid_moves, apply_move, check_win
+from game_state import get_persistence_vector, get_flattened_vector
 
 
 class SenetGame:
@@ -15,6 +16,14 @@ class SenetGame:
         self.current_player = current_player
         self.opponent = opponent
         self.game_over = False
+
+    def get_state_vector(self):
+        """Returns the current board state as a persistence vector."""
+        return get_persistence_vector(self.board)
+
+    def get_flattened_state(self):
+        """Returns a flattened state vector for AI input."""
+        return get_flattened_vector(self.board, self.current_player)
 
     def start_playing(self):
         c = Colors
