@@ -1,6 +1,5 @@
 """Senet game rules - valid moves, blockades, protection, special houses."""
 
-from player import Players
 from board import (
     HOUSE_OF_HAPPINESS, HOUSE_WATER, HOUSE_REBIRTH,
     HOUSE_THREE_TRUTHS, HOUSE_RE_ATUM, HOUSE_HORUS,
@@ -88,6 +87,7 @@ def _can_land_on(board, target_pos, player):
 
     return True
 
+
 def apply_move(board, start_pos, target_pos):
     """
     Executes the move on the board.
@@ -131,7 +131,7 @@ def apply_move(board, start_pos, target_pos):
 
                 print_message(
                     f"Player {piece} failed to exit {house_name}! Sent to Rebirth.", "error")
-                board = _send_to_rebirth(board, house_idx, piece)
+                board = _send_to_rebirth(board, piece, house_idx)
     return board
 
 
