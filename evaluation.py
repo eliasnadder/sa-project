@@ -19,10 +19,11 @@ class Evaluation:
             'protection': 20, # الحماية
             'block': 50, # الحجب على الخصم
             'attack': 30, # الهجوم على قطع الخصم 
-            'defense': -30 # الدفاع
+            'defense': -30, # الدفاع
+            'flexibility': 5
         }
         
-    def evaluate_board(self, board):
+    def evaluate_board(self, board,valid_moves=None):
         
         # التقييم في حالة عنا فوز
         if self._is_terminal(board):
@@ -46,9 +47,19 @@ class Evaluation:
         total_score += self._evaluate_protection_block(board)
         
         total_score += self._evaluate_attack_defense(board)
+         # عامل المرونة
+        if valid_moves:
+            total_score += self._evaluate_flexibility(valid_moves)
         
         return total_score
     
+    
+    def _evaluate_flexibility(self, valid_moves):
+      
+        score = 0
+        for moves in valid_moves.values():
+            score += len(moves) * self.weights['flexibility']
+        return score
     
     # هون عم نتحقق اذا اللعبة انتهت 
     def _is_terminal(self, board):
@@ -95,7 +106,7 @@ class Evaluation:
             self.weights['progress'] = 5 # التقدم بطيء ما بقدم بسرعة لقدام 
             
         # بالمرحلة يلي بكون اكبر تجمع للقطع بالوسط 
-        if phase == 'midgame':
+        elif phase == 'midgame':
         # الحجب و الحماية ما بصير في تركيز كبير عليهن و لا اهمال كبير
             self.weights['protection'] = 20 # حماية اللاعب لقطعو عادية 
             self.weights['block'] = 40 # حجب اللاعب لقطع الخصم عادية 
@@ -181,7 +192,7 @@ class Evaluation:
                 board[i + 1] == self.player and 
                 board[i + 2] == self.player):
                 
-                score +- self.weights['block']
+                score += self.weights['block']
                 
         return score
     
@@ -194,10 +205,10 @@ class Evaluation:
         
         # عم ناخد قطعة من اللاعب و قطعة من الخصم 
         # و نحسب المسافة بينهن 
-        for player_pos in player_pos:
-            for opp_pos in opp_pos:
+        for playe_pos in player_pos:
+            for op_pos in opp_pos:
                 
-                dis = abs(player_pos - opp_pos)
+                dis = abs(playe_pos - op_pos)
                 
                 # كل ما كانت المسافة اقصر فرصة هجوم اقوى
                 if 1 <= dis <= 5:
@@ -209,13 +220,13 @@ class Evaluation:
                     score += attack_value
         
         # القطع المعرضة للهجوم        
-        for player_pos in player_pos:
+        for playe_pos in player_pos:
             # القطع يلي بالبداية بأول 10 مربعات اكثر عرضة للهجوم عقوبة كاملة
-            if player_pos < 10:
+            if playe_pos < 10:
                 defense_value = self.weights['defense'] * 1.0
             
             # القطع بالمنتصف عقوبة متوسطة
-            elif player_pos < 20:
+            elif playe_pos < 20:
                 defense_value = self.weights['defense'] * 0.5
                 
             # القطع بالاخير عقوبة قليلة 
