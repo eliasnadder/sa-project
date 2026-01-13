@@ -3,6 +3,7 @@ from tkinter import messagebox
 from game import SenetGame
 from player import PlayerType
 from board import BOARD_SIZE
+from sticks import throw_sticks
 
 CELL_SIZE = 60
 
@@ -131,7 +132,7 @@ class SenetGUI:
         self.start_hvh()
 
     def throw_sticks(self):
-        roll = self.game.roll_sticks()
+        roll = throw_sticks()
         self.show_message(f"{self.game.current_player} rolled: {roll}")
 
         self.valid_moves = self.game.get_valid_moves_for_gui(roll)

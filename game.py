@@ -10,6 +10,7 @@ from rules import get_valid_moves, apply_move, check_win
 from game_state import get_persistence_vector, get_flattened_vector
 from ai import AI
 from game_state_pyrsistent import GameState
+from sticks import throw_sticks
 
 
 class SenetGame:
