@@ -8,6 +8,7 @@ from board import Colors
 from board import print_message
 from game import SenetGame
 
+from ai import AI
 
 def start_game():
     c = Colors
@@ -26,6 +27,25 @@ def start_game():
             game.start_playing()
         # case 2:
         #     self.current_player = Players.PLAYER_2
+        case 2:
+            current_player = PlayerType.PLAYER
+            opponent = PlayerType.OPPONENT
+
+            ai = AI(
+                player_symbol=opponent,
+                depth=3
+            )
+
+            print_legend(current_player, opponent)
+
+            game = SenetGame(
+                current_player=current_player,
+                opponent=opponent,
+                ai_player=ai
+            )
+
+            game.start_playing()
+
         case _:
             print_message(
                 "Invalid choice. Defaulting to Human vs Human.", "warning")
