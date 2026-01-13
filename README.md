@@ -21,6 +21,7 @@ Senet is one of the oldest known board games, dating back to ancient Egypt aroun
 ## How to Run
 
 ```bash
+pip install -r requirements.txt
 python main.py
 ```
 
