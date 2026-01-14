@@ -1,22 +1,26 @@
-import math 
-from game_state_pyrsistent import GameState,get_all_possible_rolls
-from evaluation import Evaluation
+import math
+from game_state_pyrsistent import GameState, get_all_possible_rolls
+from evaluation_ai import Evaluation
+
 
 class AI:
-    def __init__(self,player_symbol,depth):
-        self.player=player_symbol
-        self.depth=depth
-        self.evaluator=Evaluation(player_symbol)
+    def __init__(self, player_symbol, depth, weights=None):
+        self.player = player_symbol
+        self.depth = depth
+        self.evaluator = Evaluation(player_symbol, config=weights)
 
-    def evaluation(self,state):
-        board=state.get_board()
+    def evaluation(self, state):
+        board = state.get_board()
         return self.evaluator.evaluate_board(board)
 
-    def choose_best_move(self, state,roll):
+    def choose_best_move(self, state, roll):
         best_value = -math.inf
         best_move = None
+        valid_moves = state.get_valid_moves(roll)
+        # ترتيب الحركات لزيادة سرعة التفكير
+        valid_moves.sort(key=lambda m: self.evaluator.evaluate_move_priority(m), reverse=True)
 
-        for move in state.get_valid_moves(roll):
+        for move in valid_moves:
             value = self.expectiminimax(
                 state.apply_move(move[0], move[1]),
                 self.depth - 1,
@@ -28,9 +32,11 @@ class AI:
                 best_move = move
 
         return best_move
-    def expectiminimax(self,state,depth,is_max):
+
+    def expectiminimax(self, state, depth, is_max):
         if depth == 0 or state.is_terminal():
             return self.evaluation(state)
+        
         expected_value = 0.0
         rolls = get_all_possible_rolls()
 
@@ -69,5 +75,3 @@ class AI:
                 expected_value += prob * best
 
         return expected_value
-
-        

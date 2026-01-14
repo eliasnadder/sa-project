@@ -1,5 +1,7 @@
 """Entry point for the Senet game."""
 
+import json
+import os
 from player import PlayerType
 from board import print_legend
 from player import Players
@@ -9,6 +11,7 @@ from board import print_message
 from game import SenetGame
 
 from ai import AI
+
 
 def start_game():
     c = Colors
@@ -20,20 +23,35 @@ def start_game():
     choice = int(input('  Enter a number: '))
     match choice:
         case 1:
-            current_player=PlayerType.PLAYER
-            opponent=PlayerType.OPPONENT
+            current_player = PlayerType.PLAYER
+            opponent = PlayerType.OPPONENT
             print_legend(current_player, opponent)
             game = SenetGame(current_player=current_player, opponent=opponent)
             game.start_playing()
-        # case 2:
-        #     self.current_player = Players.PLAYER_2
+
         case 2:
             current_player = PlayerType.PLAYER
             opponent = PlayerType.OPPONENT
 
+            #Init weights
+            ai_weights=None
+            weights_file = "best_ai_weights.json"
+            
+            if os.path.exists(weights_file):
+                try:
+                    with open(weights_file, "r") as f:
+                        ai_weights = json.load(f)
+                    print_message("The training weights have been successfully loaded! The AI ​​is now at its maximum power.", "info")
+                except Exception as e:
+                    print_message(f"File upload error; default weights will be used.: {e}", "warning")
+            else:
+                print_message("The weights file does not exist, using default weights.", "warning")
+            # ------------------------------------------
+
             ai = AI(
                 player_symbol=opponent,
-                depth=3
+                depth=3,
+                weights=ai_weights
             )
 
             print_legend(current_player, opponent)
