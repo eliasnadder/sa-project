@@ -5,7 +5,7 @@ Enhanced for Expectiminimax using pyrsistent for true immutability.
 
 from pyrsistent import pvector, PVector
 from player import PlayerType
-from board import OFF_BOARD,HOUSE_WATER,HOUSE_THREE_TRUTHS, HOUSE_RE_ATUM, HOUSE_HORUS,HOUSE_REBIRTH
+from board import OFF_BOARD,HOUSE_WATER,HOUSE_THREE_TRUTHS, HOUSE_REBIRTH, HOUSE_RE_ATUM, HOUSE_HORUS,HOUSE_REBIRTH, BOARD_SIZE
 from rules import get_valid_moves
 
 
@@ -163,9 +163,13 @@ class GameState:
         new_vector = self._vector.set(from_pos, 0)
 
         # Handle bearing off
-        if to_pos == OFF_BOARD:
-            # Piece removed from board - vector already updated
-            pass
+        # if to_pos == OFF_BOARD:
+        #     # Piece removed from board - vector already updated
+        #     pass
+        
+        if to_pos >= BOARD_SIZE: 
+            to_pos = OFF_BOARD  
+            
         else:
             # Handle attack/swap
             if new_vector[to_pos] != 0:
@@ -218,6 +222,22 @@ class GameState:
 
         if rebirth_pos >= 0:
             vector = vector.set(rebirth_pos, piece)
+
+        else:
+    # كل البيوت في rebirth ممتلئة
+    # نحاول وضع القطعة في أقرب بيت فارغ قبل OFF_BOARD
+            rebirth_pos = HOUSE_REBIRTH
+            while rebirth_pos >= 0 and vector[rebirth_pos] != 0:
+                rebirth_pos -= 1
+
+            if rebirth_pos >= 0:
+                # لو لقينا بيت فارغ، نحط القطعة فيه
+                vector = vector.set(rebirth_pos, piece)
+            else:
+                # إذا ما في أي بيت فارغ، القطعة تتحرك للخارج
+                # (أي تمثل أنها خرجت من اللعبة)
+                # ممكن تحسبها كمكافأة أو أقلل قطعة من اللوحة
+                pass  # حسب قواعد لعبتك، ممكن تعتبر OFF_BOARD أو تضيف منطق آخر
 
         return vector
 

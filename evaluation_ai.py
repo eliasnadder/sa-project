@@ -8,14 +8,14 @@ from board import (
 SENET_AI_CONFIG = {
     'piece_off': 1200,
     'win_bonus': 20000,
-    'progress_base': 10,
+    'progress_base': 40,
     'zone_multiplier': 1.8,
     'happiness_bonus': 150,
     'water_penalty': -300,
     'special_house': 100,
-    'protection': 60,
+    'protection': 80,
     'block': 120,
-    'attack': 80,
+    'attack': 30,
     'flexibility': 8
 }
 
@@ -27,19 +27,19 @@ class Evaluation:
         self.config = config if config else SENET_AI_CONFIG
 
     def evaluate_board(self, board, valid_moves=None):
-        my_indices = [i for i, cell in enumerate(board) if cell == self.player]
-        opp_indices = [i for i, cell in enumerate(board) if cell == self.opponent]
+        player_pos = [i for i, cell in enumerate(board) if cell == self.player]
+        opp_pos = [i for i, cell in enumerate(board) if cell == self.opponent]
 
-        if not my_indices: return self.config['win_bonus']
-        if not opp_indices: return -self.config['win_bonus']
+        if not player_pos: return self.config['win_bonus']
+        if not opp_pos: return -self.config['win_bonus']
 
         score = 0
         
         # نقاط الخروج والتقدم
-        score += (7 - len(my_indices)) * self.config['piece_off']
-        score -= (7 - len(opp_indices)) * self.config['piece_off']
+        score += (7 - len(player_pos)) * self.config['piece_off']
+        score -= (7 - len(opp_pos)) * self.config['piece_off']
 
-        for pos in my_indices:
+        for pos in player_pos:
             mult = self.config['zone_multiplier'] if pos >= 20 else 1.0
             score += (pos + 1) * self.config['progress_base'] * mult
 
@@ -50,6 +50,9 @@ class Evaluation:
             # الدفاع (وجود قطع بجانب بعضها)
             if (pos > 0 and board[pos-1] == self.player) or (pos < BOARD_SIZE-1 and board[pos+1] == self.player):
                 score += self.config['protection']
+                
+            if pos + 1 < BOARD_SIZE and board[pos + 1] == self.opponent:
+                score -= 40
 
         if valid_moves:
             score += len(valid_moves) * self.config['flexibility']

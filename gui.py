@@ -265,6 +265,12 @@ class SenetGUI:
 
     def execute_move(self, move):
         start, end = move
+        
+        # لاطبع على التيرمينال________________________________________________________
+        if self.current_player == PlayerType.OPPONENT:
+            print(f"[AI EXECUTE] Move from {start} to {end}")
+        #___________________________________________________
+        
         self.board = apply_move(self.board, start, end)
         
         # Check Win
@@ -304,6 +310,14 @@ class SenetGUI:
         # 2. Calculate Move
         state = GameState.from_board(self.board, self.current_player)
         move = self.ai.choose_best_move(state, self.current_roll)
+        
+        # لاطبع على التيرمينال ___________________________________________
+        if move:
+            start, end = move
+            print(f"[AI MOVE] Rolled: {self.current_roll} | From: {start} -> To: {end}")
+        else:
+            print(f"[AI MOVE] Rolled: {self.current_roll} | No valid moves")
+        #___________________________________________________
 
         if move:
             # Visualize choice

@@ -1,15 +1,11 @@
 """Main Senet game class and game loop."""
 
 from player import PlayerType
-from board import (
-    create_initial_board, print_board,
-    print_roll, print_winner, print_message, OFF_BOARD, Colors
-)
+from board import *
 from sticks import throw_sticks
 from rules import get_valid_moves, apply_move, check_win
-from game_state import get_persistence_vector, get_flattened_vector
 from ai import AI
-from game_state_pyrsistent import GameState
+from game_state_pyrsistent import *
 from sticks import throw_sticks
 
 

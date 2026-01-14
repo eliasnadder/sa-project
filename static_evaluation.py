@@ -21,9 +21,12 @@ class Evaluation:
             'attack': 60,
             'flexibility': 3
         }
+        
+        self.default_weights = self.weights.copy()
 
     def evaluate_board(self, board,valid_moves=None):
-        
+        self.weights = self.default_weights.copy()
+
         if self._is_terminal(board):
             return self._evaluate_terminal(board)
         
@@ -60,8 +63,8 @@ class Evaluation:
         has_player = any(cell == self.player for cell in board)
         has_opp = any(cell == self.opponent for cell in board)
         
-        if not has_player: return 10000 
-        elif not has_opp: return -10000 
+        if not has_player: return -10000 
+        elif not has_opp: return 10000 
         return 0
 #_________________________________________
 

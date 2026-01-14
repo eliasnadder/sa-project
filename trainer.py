@@ -10,7 +10,7 @@ from rules import apply_move, check_win
 from sticks import throw_sticks
 
 # إعدادات التدريب
-POP_SIZE = 10
+POP_SIZE = 10 
 GENS = 20
 
 
@@ -19,6 +19,7 @@ class Trainer:
         self.population = [self._randomize_dna() for _ in range(POP_SIZE)]
         self.stats = []
 
+    
     def _randomize_dna(self):
         dna = SENET_AI_CONFIG.copy()
         for k in dna:
@@ -29,6 +30,7 @@ class Trainer:
         print("Starting Evolutionary Training...")
         for g in range(GENS):
             scores = []
+            
             for dna in self.population:
                 wins = sum(1 for _ in range(3) if self.play_match(dna) == 'X')
                 scores.append((wins, dna))
@@ -54,16 +56,32 @@ class Trainer:
 
     def play_match(self, dna):
         board = create_initial_board()
-        ai_x = AI('X', 1, weights=dna)
-        ai_o = AI('O', 1)
+
+        ai_x = AI('X', 2, weights=dna)
+        ai_o = AI('O', 2)
+
+        current_player = 'X'
+
         for _ in range(100):
             r = throw_sticks()
-            m = ai_x.choose_best_move(GameState.from_board(board, 'X'), r)
-            if m:
-                board = apply_move(board, m[0], m[1])
-                if check_win(board, 'X'):
-                    return 'X'
+
+            if current_player == 'X':
+                state = GameState.from_board(board, 'X')
+                move = ai_x.choose_best_move(state, r)
+            else:
+                state = GameState.from_board(board, 'O')
+                move = ai_o.choose_best_move(state, r)
+
+            if move:
+                board = apply_move(board, move[0], move[1])
+
+            if check_win(board, current_player):
+                return current_player
+
+            current_player = 'O' if current_player == 'X' else 'X'
+
         return 'O'
+
 
     def _mutate(self, dna):
         new_dna = dna.copy()
