@@ -1,13 +1,15 @@
 import math
 from game_state_pyrsistent import GameState, get_all_possible_rolls
 from evaluation_ai import Evaluation
-
+from static_evaluation import Evaluation
+from board import *
 
 class AI:
     def __init__(self, player_symbol, depth, weights=None):
         self.player = player_symbol
         self.depth = depth
-        self.evaluator = Evaluation(player_symbol, config=weights)
+        # self.evaluator = Evaluation(player_symbol, config=weights)
+        self.evaluator = Evaluation(player_symbol)
 
     def evaluation(self, state):
         board = state.get_board()
@@ -18,7 +20,11 @@ class AI:
         best_move = None
         valid_moves = state.get_valid_moves(roll)
         # ترتيب الحركات لزيادة سرعة التفكير
-        valid_moves.sort(key=lambda m: self.evaluator.evaluate_move_priority(m), reverse=True)
+        # valid_moves.sort(key=lambda m: self.evaluator.evaluate_move_priority(m), reverse=True)
+        
+        board = state.get_board()
+        valid_moves.sort(key=lambda m: self.evaluator.evaluate_move(board, m, roll), reverse=True)
+
 
         for move in valid_moves:
             value = self.expectiminimax(
