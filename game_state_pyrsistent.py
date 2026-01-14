@@ -5,6 +5,8 @@ Enhanced for Expectiminimax using pyrsistent for true immutability.
 
 from pyrsistent import pvector, PVector
 from player import PlayerType
+from board import OFF_BOARD,HOUSE_WATER,HOUSE_THREE_TRUTHS, HOUSE_RE_ATUM, HOUSE_HORUS,HOUSE_REBIRTH
+from rules import get_valid_moves
 
 
 class GameState:
@@ -153,7 +155,6 @@ class GameState:
         Returns:
             GameState: New state after move
         """
-        from board import OFF_BOARD
 
         # Get piece value
         piece = self._vector[from_pos]
@@ -176,13 +177,11 @@ class GameState:
             new_vector = new_vector.set(to_pos, piece)
 
             # Handle House of Water
-            from board import HOUSE_WATER
             if to_pos == HOUSE_WATER:
                 new_vector = self._send_to_rebirth_vector(
                     new_vector, piece, to_pos)
 
             # Handle exit house failures
-            from board import HOUSE_THREE_TRUTHS, HOUSE_RE_ATUM, HOUSE_HORUS
             special_houses = [HOUSE_THREE_TRUTHS, HOUSE_RE_ATUM, HOUSE_HORUS]
 
             for house_idx in special_houses:
@@ -208,7 +207,6 @@ class GameState:
         Returns:
             PVector: Modified vector
         """
-        from board import HOUSE_REBIRTH
 
         # Clear current position
         vector = vector.set(from_pos, 0)
@@ -228,7 +226,6 @@ class GameState:
         Get valid moves - requires board reconstruction.
         This is the ONLY place we need the board list.
         """
-        from rules import get_valid_moves
         board = self.get_board()
         player_symbol = self.get_current_player_symbol()
         return get_valid_moves(board, player_symbol, roll)
