@@ -12,7 +12,7 @@ class Evaluation:
         
         self.weights = {
             'piece_off': 1200,
-            'progress': 8,
+            'progress': 85,
             'happiness': 100,
             'water': -200,
             'special_house': 60,
