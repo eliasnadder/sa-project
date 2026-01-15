@@ -10,7 +10,7 @@ from rules import apply_move, check_win
 from sticks import throw_sticks
 
 # إعدادات التدريب
-POP_SIZE = 10 
+POP_SIZE = 10
 GENS = 20
 
 
@@ -19,7 +19,6 @@ class Trainer:
         self.population = [self._randomize_dna() for _ in range(POP_SIZE)]
         self.stats = []
 
-    
     def _randomize_dna(self):
         dna = SENET_AI_CONFIG.copy()
         for k in dna:
@@ -30,7 +29,7 @@ class Trainer:
         print("Starting Evolutionary Training...")
         for g in range(GENS):
             scores = []
-            
+
             for dna in self.population:
                 wins = sum(1 for _ in range(5) if self.play_match(dna) == 'X')
                 scores.append((wins, dna))
@@ -48,11 +47,6 @@ class Trainer:
         # حفظ النتيجة
         with open("best_ai_weights.json", "w") as f:
             json.dump(scores[0][1], f, indent=4)
-
-        plt.plot(self.stats)
-        plt.title("Learning Curve")
-        plt.savefig("evolution_plot.png")
-        plt.show()
 
     def play_match(self, dna):
         board = create_initial_board()
@@ -81,7 +75,6 @@ class Trainer:
             current_player = 'O' if current_player == 'X' else 'X'
 
         return 'O'
-
 
     def _mutate(self, dna):
         new_dna = dna.copy()
