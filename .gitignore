@@ -66,7 +66,7 @@ venv.bak/
 .DS_Store
 Thumbs.db
 
-# Logs
-# best_ai_weights.json
-# evolution_plot.png
+# Unneeded files
+best_ai_weights.json
 output.txt
+*.png
