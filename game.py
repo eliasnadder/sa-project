@@ -10,14 +10,13 @@ from sticks import throw_sticks
 
 
 class SenetGame:
-    def __init__(self, current_player, opponent,ai_player=None):
+    def __init__(self, current_player, opponent, ai_player=None):
         self.board = create_initial_board()
         self.current_player = current_player
         self.opponent = opponent
         self.game_over = False
 
         self.ai_player = ai_player
-
 
     def get_state_vector(self):
         """Returns the current board state as a persistence vector."""
@@ -73,7 +72,8 @@ class SenetGame:
         print(f"  {c.DIM}{'─' * 30}{c.RESET}")
 
         for idx, m in enumerate(valid_moves):
-            dest = f"{c.GREEN}Off Board{c.RESET}" if m[1] == OFF_BOARD else f"Square {m[1] + 1}"
+            dest = f"{c.GREEN}Off Board{c.RESET}" if m[1] == OFF_BOARD else "HOUSE OF HAPPINESS" if m[1] == HOUSE_OF_HAPPINESS else "HOUSE WATER" if m[1] == HOUSE_WATER else "HOUSE THREE TRUTHS" if m[
+                1] == HOUSE_THREE_TRUTHS else "HOUSE RE ATUM" if m[1] == HOUSE_RE_ATUM else "HOUSE HORUS" if m[1] == HOUSE_HORUS else f"Square {m[1] + 1}"
             print(f"    {c.YELLOW}[{idx}]{c.RESET} Square {m[0] + 1} → {dest}")
 
         print(f"  {c.DIM}{'─' * 30}{c.RESET}")
@@ -91,13 +91,15 @@ class SenetGame:
                 print_message("Please enter a number.", "error")
 
         return choice
+
     def _get_ai_choice(self, roll):
         c = Colors
         print(f"\n  {c.BOLD}{c.MAGENTA}AI is thinking...{c.RESET}")
 
         # تحويل board الحالي إلى GameState
-        state = GameState.from_board(board=self.board,current_player_symbol=self.current_player)
-        move = self.ai_player.choose_best_move(state,roll)
+        state = GameState.from_board(
+            board=self.board, current_player_symbol=self.current_player)
+        move = self.ai_player.choose_best_move(state, roll)
 
         print(
             f"  {c.MAGENTA}AI chose:{c.RESET} "
