@@ -67,6 +67,6 @@ venv.bak/
 Thumbs.db
 
 # Logs
-best_ai_weights.json
-evolution_plot.png
+# best_ai_weights.json
+# evolution_plot.png
 output.txt
