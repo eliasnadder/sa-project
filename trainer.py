@@ -32,7 +32,7 @@ class Trainer:
             scores = []
             
             for dna in self.population:
-                wins = sum(1 for _ in range(3) if self.play_match(dna) == 'X')
+                wins = sum(1 for _ in range(5) if self.play_match(dna) == 'X')
                 scores.append((wins, dna))
 
             scores.sort(key=lambda x: x[0], reverse=True)

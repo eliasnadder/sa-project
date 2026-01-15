@@ -8,6 +8,7 @@ from sticks import throw_sticks
 from ai import AI
 from game_state_pyrsistent import GameState
 from player import PlayerType
+import matplotlib.pyplot as plt
 
 # --- Constants ---
 SCREEN_WIDTH = 1000
@@ -30,6 +31,8 @@ TEXT_COLOR = (255, 255, 255)
 # Player Colors
 P1_COLOR = (0, 200, 255)   # Cyan
 P2_COLOR = (255, 0, 255)   # Magenta
+
+plt.ion()
 
 class Button:
     def __init__(self, x, y, width, height, text, action=None):
