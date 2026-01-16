@@ -110,7 +110,7 @@ def apply_move(board, start_pos, target_pos):
         # Place piece in new spot
         board[target_pos] = piece
         print_message(
-            f"Player {piece} moved forward {target_pos}.", "success")
+            f"Player {piece} moved forward {target_pos+1}.", "success")
 
         # --- RULE: House of Water ---
         if target_pos == HOUSE_WATER:

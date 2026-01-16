@@ -1,8 +1,10 @@
 # gui.py
+import json
+import os
 import pygame
 import sys
 import time
-from engines.board import create_initial_board, OFF_BOARD
+from engines.board import create_initial_board, OFF_BOARD, print_message
 from engines.board import HOUSE_REBIRTH, HOUSE_OF_HAPPINESS, HOUSE_WATER, HOUSE_THREE_TRUTHS, HOUSE_RE_ATUM, HOUSE_HORUS
 from engines.rules import get_valid_moves, apply_move, check_win
 from engines.sticks import throw_sticks
@@ -158,7 +160,26 @@ class SenetGUI:
         self.ai_depth = depth
 
         if mode == 2:
-            self.ai = AI(player_symbol=PlayerType.OPPONENT, depth=depth)
+            # Init weights
+            ai_weights = None
+            weights_file = "best_ai_weights.json"
+
+            if os.path.exists(weights_file):
+                try:
+                    with open(weights_file, "r") as f:
+                        ai_weights = json.load(f)
+                    print_message(
+                        "The training weights have been successfully loaded! The AI ​​is now at its maximum power.", "info")
+                except Exception as e:
+                    print_message(
+                        f"File upload error; default weights will be used.: {e}", "warning")
+            else:
+                print_message(
+                    "The weights file does not exist, using default weights.", "warning")
+            # ------------------------------------------
+
+            self.ai = AI(player_symbol=PlayerType.OPPONENT,
+                         depth=depth, weights=ai_weights)
         else:
             self.ai = None
 

@@ -6,7 +6,7 @@ from players.player import PlayerType
 from engines.board import print_legend,print_title,Colors,print_message
 from engines.game import SenetGame
 
-from players.ai_pruning import ImprovedAI
+from players.ai_pruning import AI
 
 
 def start_game():
@@ -44,7 +44,7 @@ def start_game():
                 print_message("The weights file does not exist, using default weights.", "warning")
             # ------------------------------------------
 
-            ai = ImprovedAI(
+            ai = AI(
                 player_symbol=opponent,
                 depth=3,
                 weights=ai_weights
