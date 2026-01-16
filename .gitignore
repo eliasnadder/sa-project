@@ -67,6 +67,6 @@ venv.bak/
 Thumbs.db
 
 # Unneeded files
-best_ai_weights.json
+# best_ai_weights.json
 output.txt
 *.png
