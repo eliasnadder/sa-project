@@ -4,8 +4,8 @@ Enhanced for Expectiminimax using pyrsistent for true immutability.
 """
 
 from pyrsistent import pvector, PVector
-from board import OFF_BOARD,HOUSE_WATER,HOUSE_THREE_TRUTHS, HOUSE_REBIRTH, HOUSE_RE_ATUM, HOUSE_HORUS,HOUSE_REBIRTH, BOARD_SIZE
-from rules import get_valid_moves
+from engines.board import OFF_BOARD,HOUSE_WATER,HOUSE_THREE_TRUTHS, HOUSE_REBIRTH, HOUSE_RE_ATUM, HOUSE_HORUS,HOUSE_REBIRTH, BOARD_SIZE
+from engines.rules import get_valid_moves
 
 
 class GameState:

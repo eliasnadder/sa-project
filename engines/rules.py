@@ -1,9 +1,8 @@
 """Senet game rules - valid moves, blockades, protection, special houses."""
 
-from board import (
-    HOUSE_OF_HAPPINESS, HOUSE_WATER, HOUSE_REBIRTH,
-    HOUSE_THREE_TRUTHS, HOUSE_RE_ATUM, HOUSE_HORUS,
-    BOARD_SIZE, OFF_BOARD, print_message
+from engines.board import (
+    HOUSE_OF_HAPPINESS, HOUSE_REBIRTH, HOUSE_WATER, HOUSE_THREE_TRUTHS,
+    HOUSE_RE_ATUM, HOUSE_HORUS, BOARD_SIZE, OFF_BOARD, print_message
 )
 
 
