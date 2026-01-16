@@ -1,4 +1,4 @@
-from board import (
+from engines.board import (
     HOUSE_OF_HAPPINESS, HOUSE_WATER, HOUSE_THREE_TRUTHS,
     HOUSE_RE_ATUM, HOUSE_HORUS, HOUSE_REBIRTH, BOARD_SIZE, OFF_BOARD
 )

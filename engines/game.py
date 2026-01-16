@@ -1,12 +1,12 @@
 """Main Senet game class and game loop."""
 
-from player import PlayerType
-from board import *
-from sticks import throw_sticks
-from rules import get_valid_moves, apply_move, check_win
-from ai import AI
-from game_state_pyrsistent import *
-from sticks import throw_sticks
+from players.player import PlayerType
+from engines.board import *
+from engines.sticks import throw_sticks
+from engines.rules import get_valid_moves, apply_move, check_win
+from players.ai_pruning import AI
+from engines.game_state_pyrsistent import *
+from engines.sticks import throw_sticks
 
 
 class SenetGame:

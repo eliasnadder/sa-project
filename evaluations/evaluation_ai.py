@@ -1,4 +1,4 @@
-from board import (
+from engines.board import (
     HOUSE_OF_HAPPINESS, HOUSE_WATER, HOUSE_THREE_TRUTHS,
     HOUSE_RE_ATUM, HOUSE_HORUS, HOUSE_REBIRTH, BOARD_SIZE, OFF_BOARD
 )
@@ -18,7 +18,6 @@ SENET_AI_CONFIG = {
 }
 
 class Evaluation:
-
     def __init__(self, player, config=None):
         self.player = player
         self.opponent = 'O' if player == 'X' else 'X'
@@ -54,7 +53,7 @@ class Evaluation:
 
     def _is_terminal(self, board):
         return not any(c == self.player for c in board) or \
-               not any(c == self.opponent for c in board)
+            not any(c == self.opponent for c in board)
 
     def _evaluate_terminal(self, board):
         if not any(c == self.player for c in board):

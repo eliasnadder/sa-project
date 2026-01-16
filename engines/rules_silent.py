@@ -1,6 +1,6 @@
 """Senet game rules - valid moves, blockades, protection, special houses."""
 
-from board import (
+from engines.board import (
     HOUSE_OF_HAPPINESS, HOUSE_WATER, HOUSE_REBIRTH,
     HOUSE_THREE_TRUTHS, HOUSE_RE_ATUM, HOUSE_HORUS,
     BOARD_SIZE, OFF_BOARD, print_message
@@ -99,24 +99,19 @@ def apply_move(board, start_pos, target_pos):
 
     # Handle Bearing Off
     if target_pos == OFF_BOARD:
-        print_message(f"Player {piece} bears off a piece! 🏆", "success")
+        pass
 
     else:
         # Handle Attack (Swap)
         if board[target_pos] is not None:
             opponent = board[target_pos]
-            print_message(f"Attack! {piece} swaps with {opponent}.", "attack")
             board[start_pos] = opponent  # Opponent sent back
 
         # Place piece in new spot
         board[target_pos] = piece
-        print_message(
-            f"Player {piece} moved forward {target_pos}.", "success")
 
         # --- RULE: House of Water ---
         if target_pos == HOUSE_WATER:
-            print_message(
-                f"Oh no! {piece} fell into the House of Water!", "water")
             board = _send_to_rebirth(board, piece, target_pos)
 
     special_danger_houses = [HOUSE_THREE_TRUTHS, HOUSE_RE_ATUM, HOUSE_HORUS]
@@ -128,11 +123,6 @@ def apply_move(board, start_pos, target_pos):
             # However, we must be careful: Did they JUST land there this turn?
             # If they just landed there (target_pos == house_idx), they are safe for now.
             if house_idx != target_pos:
-                house_name = "Three Truths" if house_idx == HOUSE_THREE_TRUTHS else \
-                             "Re-Atum" if house_idx == HOUSE_RE_ATUM else "Horus"
-
-                print_message(
-                    f"Player {piece} failed to exit {house_name}! Sent to Rebirth.", "error")
                 board = _send_to_rebirth(board, piece, house_idx)
     return board
 
@@ -149,8 +139,6 @@ def _send_to_rebirth(board, piece, target_pos):
         rebirth_pos -= 1
 
     if rebirth_pos >= 0:
-        print_message(
-            f"{piece} is reborn at square {rebirth_pos + 1}.", "rebirth")
         board[rebirth_pos] = piece
     else:
         # Extreme edge case fallback

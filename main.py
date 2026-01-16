@@ -2,15 +2,11 @@
 
 import json
 import os
-from player import PlayerType
-from board import print_legend
-from player import Players
-from board import print_title
-from board import Colors
-from board import print_message
-from game import SenetGame
+from players.player import PlayerType
+from engines.board import print_legend,print_title,Colors,print_message
+from engines.game import SenetGame
 
-from ai import AI
+from players.ai_pruning import ImprovedAI
 
 
 def start_game():
@@ -48,7 +44,7 @@ def start_game():
                 print_message("The weights file does not exist, using default weights.", "warning")
             # ------------------------------------------
 
-            ai = AI(
+            ai = ImprovedAI(
                 player_symbol=opponent,
                 depth=3,
                 weights=ai_weights

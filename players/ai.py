@@ -1,8 +1,8 @@
 import math
-from game_state_pyrsistent import GameState, get_all_possible_rolls
-from evaluation_ai import Evaluation
+from engines.game_state_pyrsistent import get_all_possible_rolls
+from evaluations.evaluation_ai import Evaluation
 # from static_evaluation import Evaluation
-from board import *
+from engines.board import *
 
 class AI:
     def __init__(self, player_symbol, depth, weights=None):
@@ -24,7 +24,6 @@ class AI:
         
         # board = state.get_board()
         # valid_moves.sort(key=lambda m: self.evaluator.evaluate_move(board, m, roll), reverse=True)
-
 
         for move in valid_moves:
             value = self.expectiminimax(
