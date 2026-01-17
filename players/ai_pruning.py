@@ -1,7 +1,7 @@
 import math
 from engines.board import BOARD_SIZE, HOUSE_OF_HAPPINESS, HOUSE_WATER, OFF_BOARD
 from engines.game_state_pyrsistent import GameState, get_all_possible_rolls
-from evaluations.evaluation_ai_star1 import Evaluation, MAX_POSSIBLE_SCORE, MIN_POSSIBLE_SCORE
+from evaluations.evaluation_ai_phased import Evaluation, MAX_POSSIBLE_SCORE, MIN_POSSIBLE_SCORE
 
 
 class AI:
