@@ -3,7 +3,6 @@ from engines.board import (
     HOUSE_RE_ATUM, HOUSE_HORUS, HOUSE_REBIRTH, BOARD_SIZE, OFF_BOARD
 )
 
-# هذه هي الأوزان التي سيتم تدريبها
 SENET_AI_CONFIG = {
     'piece_off': 1200,
     'progress': 85,

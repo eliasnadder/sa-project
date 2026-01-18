@@ -12,8 +12,16 @@ from players.ai_pruning import AI
 from engines.game_state_pyrsistent import GameState
 from players.player import PlayerType
 import matplotlib.pyplot as plt
+from players.game_modes import SlowAI, FastAI
 
-# --- Constants ---
+AI_OPTIONS = {
+    "SLOW": {"ai_class": SlowAI, "depth": 4, "label": "Slow AI"},
+    "MEDIUM": {"ai_class": FastAI, "depth": 3, "label": "Medium AI"},
+    "FAST": {"ai_class": FastAI, "depth": 2, "label": "Fast AI"}
+}
+
+# --- Const
+# ants ---
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 700
 GRID_SIZE = 80
@@ -142,6 +150,11 @@ class SenetGUI:
             SCREEN_WIDTH//2 - 100, 450, 200, 60, "Start Game", "START_AI")
         self.depth_error_msg = ""
 
+        self.btn_slow = Button(SCREEN_WIDTH//2 - 150, 300, 300, 60, "Slow AI", "SLOW")
+        self.btn_medium = Button(SCREEN_WIDTH//2 - 150, 380, 300, 60, "Medium AI", "MEDIUM")
+        self.btn_fast = Button(SCREEN_WIDTH//2 - 150, 460, 300, 60, "Fast AI", "FAST")
+
+        
         # Game Buttons
         self.btn_throw = Button(SCREEN_WIDTH//2 - 75,
                                 550, 150, 50, "Throw Sticks", "THROW")
@@ -280,16 +293,27 @@ class SenetGUI:
                 self.depth_error_msg = ""
                 return
 
+        # elif self.state == "AI_SETUP":
+        #     self.input_depth.handle_event(pygame.event.Event(
+        #         pygame.MOUSEBUTTONDOWN, {'pos': pos}))
+
+        #     if self.btn_start_ai.check_click(pos) == "START_AI":
+        #         self.try_start_ai_game(self.input_depth.text)
+
+        #     if self.btn_menu.check_click(pos) == "MENU_RETURN":
+        #         self.state = "MENU"
+        #         return
+        
         elif self.state == "AI_SETUP":
-            self.input_depth.handle_event(pygame.event.Event(
-                pygame.MOUSEBUTTONDOWN, {'pos': pos}))
+            if self.btn_slow.check_click(pos) == "SLOW":
+                self.try_start_ai_game("4")   # Slow AI → depth 4
+            elif self.btn_medium.check_click(pos) == "MEDIUM":
+                self.try_start_ai_game("3")   # Medium AI → depth 3
+            elif self.btn_fast.check_click(pos) == "FAST":
+                self.try_start_ai_game("2")   # Fast AI → depth 2
 
-            if self.btn_start_ai.check_click(pos) == "START_AI":
-                self.try_start_ai_game(self.input_depth.text)
-
-            if self.btn_menu.check_click(pos) == "MENU_RETURN":
+            elif self.btn_menu.check_click(pos) == "MENU_RETURN":
                 self.state = "MENU"
-                return
 
         elif self.state == "PLAYING":
             if self.btn_menu.check_click(pos) == "MENU_RETURN":
@@ -438,6 +462,35 @@ class SenetGUI:
         self.btn_hvh.draw(self.screen, self.font)
         self.btn_ai.draw(self.screen, self.font)
 
+    # def draw_ai_setup(self, mouse_pos):
+    #     # Back to menu button
+    #     self.btn_menu.check_hover(mouse_pos)
+    #     self.btn_menu.draw(self.screen, self.font)
+
+    #     # Title
+    #     title = self.title_font.render("AI Settings", True, BOARD_COLOR)
+    #     self.screen.blit(title, (SCREEN_WIDTH//2 - title.get_width()//2, 100))
+
+    #     # Instructions
+    #     hint_text = self.font.render(
+    #         "Recommended depth: 3 (higher = stronger but slower)", True, WHITE)
+    #     self.screen.blit(hint_text, (SCREEN_WIDTH//2 -
+    #                      hint_text.get_width()//2, 250))
+
+    #     # Input box
+    #     self.input_depth.draw(self.screen, self.font)
+
+    #     # Error message
+    #     if self.depth_error_msg:
+    #         error_surf = self.small_font.render(
+    #             self.depth_error_msg, True, ERROR_COLOR)
+    #         self.screen.blit(error_surf, (SCREEN_WIDTH//2 -
+    #                          error_surf.get_width()//2, 410))
+
+    #     # Start button
+    #     self.btn_start_ai.check_hover(mouse_pos)
+    #     self.btn_start_ai.draw(self.screen, self.font)
+    
     def draw_ai_setup(self, mouse_pos):
         # Back to menu button
         self.btn_menu.check_hover(mouse_pos)
@@ -449,23 +502,14 @@ class SenetGUI:
 
         # Instructions
         hint_text = self.font.render(
-            "Recommended depth: 3 (higher = stronger but slower)", True, WHITE)
-        self.screen.blit(hint_text, (SCREEN_WIDTH//2 -
-                         hint_text.get_width()//2, 250))
+            "Select AI difficulty", True, WHITE)
+        self.screen.blit(hint_text, (SCREEN_WIDTH//2 - hint_text.get_width()//2, 250))
 
-        # Input box
-        self.input_depth.draw(self.screen, self.font)
+        # Draw buttons
+        for btn in [self.btn_slow, self.btn_medium, self.btn_fast]:
+            btn.check_hover(mouse_pos)
+            btn.draw(self.screen, self.font)
 
-        # Error message
-        if self.depth_error_msg:
-            error_surf = self.small_font.render(
-                self.depth_error_msg, True, ERROR_COLOR)
-            self.screen.blit(error_surf, (SCREEN_WIDTH//2 -
-                             error_surf.get_width()//2, 410))
-
-        # Start button
-        self.btn_start_ai.check_hover(mouse_pos)
-        self.btn_start_ai.draw(self.screen, self.font)
 
     def draw_game(self, mouse_pos):
         self.btn_menu.check_hover(mouse_pos)

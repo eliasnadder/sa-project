@@ -86,37 +86,33 @@ def _can_land_on(board, target_pos, player):
 
     return True
 
+def _maybe_print(message, level, silent):
+    if not silent: print_message(message, level)
 
-def apply_move(board, start_pos, target_pos):
-    """
-    Executes the move on the board.
-    Handles swapping (Attack) and House of Water.
-    Returns the updated board.
-    """
+def apply_move(board, start_pos, target_pos, silent=False):
     piece = board[start_pos]
     board[start_pos] = None  # Remove from old spot
 
     # Handle Bearing Off
     if target_pos == OFF_BOARD:
-        print_message(f"Player {piece} bears off a piece! 🏆", "success")
+        _maybe_print(f"Player {piece} bears off a piece! 🏆", "success", silent)
 
     else:
         # Handle Attack (Swap)
         if board[target_pos] is not None:
             opponent = board[target_pos]
-            print_message(f"Attack! {piece} swaps with {opponent}.", "attack")
-            board[start_pos] = opponent  # Opponent sent back
+            board[start_pos] = opponent  
+            _maybe_print(f"Attack! {piece} swaps with {opponent}.", "attack", silent)
+
 
         # Place piece in new spot
         board[target_pos] = piece
-        print_message(
-            f"Player {piece} moved forward {target_pos+1}.", "success")
+        _maybe_print(f"Player {piece} moved forward {target_pos+1}.", "success", silent)
 
         # --- RULE: House of Water ---
         if target_pos == HOUSE_WATER:
-            print_message(
-                f"Oh no! {piece} fell into the House of Water!", "water")
-            board = _send_to_rebirth(board, piece, target_pos)
+           _maybe_print(f"Oh no! {piece} fell into the House of Water!", "water", silent)
+           board = _send_to_rebirth(board, piece, target_pos, silent)
 
     special_danger_houses = [HOUSE_THREE_TRUTHS, HOUSE_RE_ATUM, HOUSE_HORUS]
 
@@ -130,13 +126,12 @@ def apply_move(board, start_pos, target_pos):
                 house_name = "Three Truths" if house_idx == HOUSE_THREE_TRUTHS else \
                              "Re-Atum" if house_idx == HOUSE_RE_ATUM else "Horus"
 
-                print_message(
-                    f"Player {piece} failed to exit {house_name}! Sent to Rebirth.", "error")
-                board = _send_to_rebirth(board, piece, house_idx)
+                _maybe_print(f"Player {piece} failed to exit {house_name}! Sent to Rebirth.", "error", silent)
+                board = _send_to_rebirth(board, piece, house_idx, silent)
     return board
 
 
-def _send_to_rebirth(board, piece, target_pos):
+def _send_to_rebirth(board, piece, target_pos, silent=False):
     """Generic function to send a piece back to House of Rebirth logic."""
     board[target_pos] = None  # Remove
 
@@ -148,13 +143,11 @@ def _send_to_rebirth(board, piece, target_pos):
         rebirth_pos -= 1
 
     if rebirth_pos >= 0:
-        print_message(
-            f"{piece} is reborn at square {rebirth_pos + 1}.", "rebirth")
+        _maybe_print(f"{piece} is reborn at square {rebirth_pos + 1}.", "rebirth", silent)
         board[rebirth_pos] = piece
     else:
         # Extreme edge case fallback
-        print_message(
-            f"{piece} was lost in the waters (No empty squares).", "error")
+        _maybe_print(f"{piece} was lost in the waters (No empty squares).", "error", silent)
 
     return board
 

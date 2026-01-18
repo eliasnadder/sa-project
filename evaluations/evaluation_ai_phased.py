@@ -3,7 +3,6 @@ from engines.board import (
     BOARD_SIZE, OFF_BOARD
 )
 
-# الإعدادات الافتراضية
 SENET_AI_CONFIG = {
     'piece_off': 1200,
     'win_bonus': 20000,

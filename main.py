@@ -1,14 +1,34 @@
-"""Entry point for the Senet game."""
 
 import json
 import os
 from engines.board import print_legend, print_title, Colors, print_message
 from engines.game import SenetGame
-# from engines.game_ql import SenetGame
 from players.player import PlayerType
-from players.ai_pruning import AI
-from players.player_rl import QLearningAI
+from players.ai_pruning import AI 
 
+from players.game_modes import GAME_MODES as M 
+
+
+def choose_game_mode():
+    print("choose game mode:")
+    print("1 - Human vs Human")
+    print("2 - Easy")
+    print("3 - Medium")
+    print("4 - Hard")
+    
+    mapping = {
+        "1": "HUMAN",
+        "2": "EASY",
+        "3": "MEDIUM",
+        "4": "HARD"
+    }
+    
+    choice = input("Select: ")
+    if choice not in mapping:
+        print_message("Invaild choice, defaulting to Human va Human.", "warning")
+        choice = "1"
+    
+    return M[mapping[choice]]
 
 def start_game():
     c = Colors
@@ -16,7 +36,14 @@ def start_game():
 
     input(f"\n  {c.DIM}Press Enter to start...{c.RESET}")
 
-    print("\n  Choose type: \n    1- Human vs Human \n    2- Human vs AI\n    3- Human vs AI (Q-Learning)")
+    print("\n  Choose type: \n    1- Human vs Human \n    2- Human vs AI(SLOW)\n   3- Human vs AI(FAST)  4- Human vs AI(MEDIUM)  5- Human vs AI (Q-Learning)")
+    
+    AI_OPTIONS = {
+        2: {"ai_class": M.SlowAI, "depth": 4, "label": "SLOW AI"},
+        3: {"ai_class": M.FastAI, "depth": 2, "label": "FAST AI"},
+        4: {"ai_class": M.AFastAI, "depth": 3, "label": "MEDIUM AI"}
+    }
+    
     choice = int(input('  Enter a number: '))
     match choice:
         case 1:
@@ -26,10 +53,15 @@ def start_game():
             game = SenetGame(current_player=current_player, opponent=opponent)
             game.start_playing()
 
-        case 2:
+        case c if c in AI_OPTIONS:
             current_player = PlayerType.PLAYER
             opponent = PlayerType.OPPONENT
 
+            ai_config = AI_OPTIONS[c]
+            ai_class = ai_config["ai_class"]
+            depth = ai_config["depth"]
+            label = ai_config['label']
+            
             # Init weights
             ai_weights = None
             weights_file = "best_ai_weights.json"
@@ -39,7 +71,7 @@ def start_game():
                     with open(weights_file, "r") as f:
                         ai_weights = json.load(f)
                     print_message(
-                        "The training weights have been successfully loaded! The AI ​​is now at its maximum power.", "info")
+                        "The training weights have been successfully loaded {label}! ​is now at its maximum power.", "info")
                 except Exception as e:
                     print_message(
                         f"File upload error; default weights will be used.: {e}", "warning")
@@ -48,11 +80,7 @@ def start_game():
                     "The weights file does not exist, using default weights.", "warning")
             # ------------------------------------------
 
-            ai = AI(
-                player_symbol=opponent,
-                depth=3,
-                weights=ai_weights
-            )
+            ai = AI(player_symbol=opponent, depth=depth, weights=ai_weights)
 
             print_legend(current_player, opponent)
 
@@ -64,22 +92,22 @@ def start_game():
 
             game.start_playing()
 
-        case 3:
-            current_player = PlayerType.PLAYER
-            opponent = PlayerType.OPPONENT
+        # case 5:
+        #     current_player = PlayerType.PLAYER
+        #     opponent = PlayerType.OPPONENT
 
-            # تهيئة AI متعلم (QLearning)
-            ai = QLearningAI(opponent)
-            ai.load_latest_data()  # يحمله من training_logs/
+        #     # تهيئة AI متعلم (QLearning)
+        #     ai = QLearningAI(opponent)
+        #     ai.load_latest_data()  # يحمله من training_logs/
 
-            print_legend(current_player, opponent)
+        #     print_legend(current_player, opponent)
 
-            game = SenetGame(
-                current_player=current_player,
-                opponent=opponent,
-                ai_player=ai
-            )
-            game.start_playing()
+        #     game = SenetGame(
+        #         current_player=current_player,
+        #         opponent=opponent,
+        #         ai_player=ai
+        #     )
+        #     game.start_playing()
 
         case _:
             print_message(

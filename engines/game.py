@@ -53,7 +53,7 @@ class SenetGame:
                     else:
                         choice = self._get_player_choice(valid_moves)
 
-                    self.board = apply_move(self.board, choice[0], choice[1])
+                    self.board = apply_move(self.board, choice[0], choice[1], silent=False)
 
                     # Check Win
                     if check_win(self.board, self.current_player):
