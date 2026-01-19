@@ -5,29 +5,6 @@ from players.player import PlayerType
 from players.game_modes import GAME_MODES
 
 
-# def choose_game_mode():
-#     print("choose game mode:")
-#     print("1 - Human vs Human")
-#     print("2 - Easy")
-#     print("3 - Medium")
-#     print("4 - Hard")
-#     print("5 - Intelligent")
-
-#     mapping = {
-#         "1": "HUMAN",
-#         "2": "EASY",
-#         "3": "MEDIUM",
-#         "4": "HARD",
-#         "5":"Intelligent"
-#     }
-
-#     choice = input("Select: ")
-#     if choice not in mapping:
-#         print_message("Invaild choice, defaulting to Human va Human.", "warning")
-#         choice = "1"
-
-#     return M[mapping[choice]]
-
 def start_game():
     c = Colors
     print_title()
@@ -35,12 +12,6 @@ def start_game():
     input(f"\n  {c.DIM}Press Enter to start...{c.RESET}")
 
     print("\n  Choose type: \n    1- Human vs Human \n    2- Human vs AI(SLOW) \n    3- Human vs AI(FAST) \n    4- Human vs AI(MEDIUM)")
-
-    # AI_OPTIONS = {
-    #     2: {"ai_class": M.SlowAI, "depth": 4, "label": "SLOW AI"},
-    #     3: {"ai_class": M.FastAI, "depth": 2, "label": "FAST AI"},
-    #     4: {"ai_class": M.AFastAI, "depth": 3, "label": "MEDIUM AI"},
-    # }
 
     mode_mapping = {
         2: "HARD",
