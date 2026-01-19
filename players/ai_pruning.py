@@ -1,4 +1,5 @@
 import math
+from engines.load_weights import load_weights
 from engines.board import BOARD_SIZE, HOUSE_OF_HAPPINESS, HOUSE_WATER, OFF_BOARD
 from engines.game_state_pyrsistent import GameState, get_all_possible_rolls
 from evaluations.evaluation_ai_phased import Evaluation, MAX_POSSIBLE_SCORE, MIN_POSSIBLE_SCORE
@@ -12,10 +13,10 @@ class AI:
     - Iterative Deepening
     """
 
-    def __init__(self, player_symbol, depth, weights=None):
+    def __init__(self, player_symbol, depth):
         self.player = player_symbol
         self.depth = depth
-        self.evaluator = Evaluation(player_symbol, config=weights)
+        self.evaluator = Evaluation(player_symbol, config=load_weights())
 
         # Transposition Table
         self.transposition_table = {}
