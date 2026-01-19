@@ -1,5 +1,3 @@
-import json
-import os
 from engines.board import print_legend, print_title, Colors, print_message
 from engines.game import SenetGame
 from players.player import PlayerType
@@ -36,7 +34,7 @@ def start_game():
 
     input(f"\n  {c.DIM}Press Enter to start...{c.RESET}")
 
-    print("\n  Choose type: \n    1- Human vs Human \n    2- Human vs AI(SLOW)\n   3- Human vs AI(FAST)  4- Human vs AI(MEDIUM)  5- Human vs AI (Q-Learning)")
+    print("\n  Choose type: \n    1- Human vs Human \n    2- Human vs AI(SLOW) \n    3- Human vs AI(FAST) \n    4- Human vs AI(MEDIUM)")
 
     # AI_OPTIONS = {
     #     2: {"ai_class": M.SlowAI, "depth": 4, "label": "SLOW AI"},
@@ -60,7 +58,7 @@ def start_game():
             game = SenetGame(current_player=current_player, opponent=opponent)
             game.start_playing()
 
-        case 2 | 3 | 4 | 5:
+        case 2 | 3 | 4:
             current_player = PlayerType.PLAYER
             opponent = PlayerType.OPPONENT
 
@@ -91,11 +89,9 @@ def start_game():
 
 
 if __name__ == "__main__":
-    start_game()
-    
-    # try:
-    #     start_game()
-    # except KeyboardInterrupt:
-    #     print_message("Game interrupted by user.", "error")
-    # except Exception as e:
-    #     print_message(f"An error occurred: {e}", "error")
+    try:
+        start_game()
+    except KeyboardInterrupt:
+        print_message("Game interrupted by user.", "error")
+    except Exception as e:
+        print_message(f"An error occurred: {e}", "error")
