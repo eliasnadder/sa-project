@@ -35,12 +35,12 @@ PHASE_MULTIPLIERS = {
         'isolated_penalty': 1.2     # مهم في الوسط
     },
     'endgame': {
-        'progress_base': 2.0,       # حاسم للفوز
-        'piece_off': 1.5,           # أهم شيء
-        'block': 0.4,               # قليل الأهمية
-        'protection': 0.5,          # قليل الأهمية
-        'attack': 0.6,
-        'isolated_penalty': 0.5     # ليس مهم
+        'progress_base': 2.5,     # زيادة كبيرة
+        'zone_multiplier': 2.0,   # إضافة إذا أمكن
+        'piece_off': 1.8,
+        'block': 0.3,
+        'attack': 0.4,
+        'protection': 0.4
     }
 }
 

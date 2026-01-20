@@ -210,22 +210,22 @@ class AI:
             self.transposition_table.clear()
 
     def _evaluate_move_priority(self, move, state):
-        """نفس دالة التقييم الجيدة التي كتبتها"""
         _, to_pos = move
         priority = 0
         if to_pos == OFF_BOARD:
-            priority += 10000
+            priority += 20000                    # أعلى أولوية للخروج
+        if to_pos >= 25:                         # أي حركة في المنطقة النهائية
+            priority += 5000 + (to_pos * 20)
         if to_pos == HOUSE_OF_HAPPINESS:
-            priority += 1000
+            priority += 1500
         if to_pos == HOUSE_WATER:
-            priority -= 5000
+            priority -= 8000                     # عقوبة أقوى
 
         board = state.get_board()
-        # فحص الهجوم (بسيط)
         if to_pos < BOARD_SIZE and board[to_pos] == state.get_opponent_symbol():
-            priority += 500
+            priority += 800                      # هجوم جيد لكن ليس أولوية مطلقة
 
-        priority += to_pos * 10
+        priority += to_pos * 15                  # مكافأة عامة للتقدم
         return priority
 
     def _order_moves(self, moves, state):
