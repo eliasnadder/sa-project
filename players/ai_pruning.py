@@ -210,22 +210,35 @@ class AI:
             self.transposition_table.clear()
 
     def _evaluate_move_priority(self, move, state):
-        _, to_pos = move
+        from_pos, to_pos = move
         priority = 0
-        if to_pos == OFF_BOARD:
-            priority += 20000                    # أعلى أولوية للخروج
-        if to_pos >= 25:                         # أي حركة في المنطقة النهائية
-            priority += 5000 + (to_pos * 20)
-        if to_pos == HOUSE_OF_HAPPINESS:
-            priority += 1500
-        if to_pos == HOUSE_WATER:
-            priority -= 8000                     # عقوبة أقوى
 
+        # أولوية قصوى للخروج
+        if to_pos == OFF_BOARD:
+            return 30000
+
+        # أولوية عالية للتقدم المتأخر
+        if to_pos >= 25:
+            priority += 10000 + to_pos * 50
+        elif to_pos >= 20:
+            priority += 5000 + to_pos * 20
+
+        # مكافأة بيت السعادة لكن ليس مفرطة
+        if to_pos == HOUSE_OF_HAPPINESS:
+            priority += 2000
+
+        # عقوبة قوية للماء
+        if to_pos == HOUSE_WATER:
+            priority -= 10000
+
+        # هجوم جيد لكن ليس أولوية مطلقة
         board = state.get_board()
         if to_pos < BOARD_SIZE and board[to_pos] == state.get_opponent_symbol():
-            priority += 800                      # هجوم جيد لكن ليس أولوية مطلقة
+            priority += 1200  # كان 500 سابقاً → جيد لكن ليس أعلى من التقدم
 
-        priority += to_pos * 15                  # مكافأة عامة للتقدم
+        # مكافأة عامة للتقدم
+        priority += to_pos * 25
+
         return priority
 
     def _order_moves(self, moves, state):
