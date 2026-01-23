@@ -1,12 +1,11 @@
 """Main Senet game class and game loop."""
 
+from engines.board import HOUSE_HORUS, HOUSE_OF_HAPPINESS, HOUSE_RE_ATUM, HOUSE_THREE_TRUTHS, HOUSE_WATER, OFF_BOARD, Colors, create_initial_board, print_board, print_message, print_roll, print_winner
+from engines.game_state_pyrsistent import GameState, get_flattened_vector, get_persistence_vector
 from players.player import PlayerType
-from engines.board import *
 from engines.sticks import throw_sticks
 from engines.rules import get_valid_moves, apply_move, check_win
 from players.ai_pruning import AI
-from engines.game_state_pyrsistent import *
-from engines.sticks import throw_sticks
 
 
 class SenetGame:
@@ -29,7 +28,7 @@ class SenetGame:
     def start_playing(self):
         c = Colors
         while not self.game_over:
-            print_board(self.board)
+            print_board(self.board, self.current_player)
             player_color = c.CYAN if self.current_player == PlayerType.PLAYER else c.MAGENTA
             print(
                 f"\n  {c.BOLD}{player_color}▶ Player {self.current_player}'s turn{c.RESET}")
@@ -47,13 +46,13 @@ class SenetGame:
                 if not valid_moves:
                     print_message("No legal moves available.", "warning")
                 else:
-                    # choice = self._get_player_choice(valid_moves)
                     if self.ai_player and self.current_player == PlayerType.OPPONENT:
                         choice = self._get_ai_choice(roll)
                     else:
                         choice = self._get_player_choice(valid_moves)
 
-                    self.board = apply_move(self.board, choice[0], choice[1], silent=False)
+                    self.board = apply_move(
+                        self.board, choice[0], choice[1], silent=False)
 
                     # Check Win
                     if check_win(self.board, self.current_player):
@@ -106,5 +105,8 @@ class SenetGame:
             f"Square {move[0] + 1} → "
             f"{'Off Board' if move[1] == OFF_BOARD else f'Square {move[1] + 1}'}"
         )
+        stats = self.ai_player.get_stats()
+        print(
+            f" AI evaluated {stats['nodes']} nodes | {stats['pruning']} prunings | {stats['tt_hits']} TT hits")
 
         return move

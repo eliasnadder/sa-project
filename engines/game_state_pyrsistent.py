@@ -4,7 +4,7 @@ Enhanced for Expectiminimax using pyrsistent for true immutability.
 """
 
 from pyrsistent import pvector, PVector
-from engines.board import OFF_BOARD,HOUSE_WATER,HOUSE_THREE_TRUTHS, HOUSE_REBIRTH, HOUSE_RE_ATUM, HOUSE_HORUS,HOUSE_REBIRTH, BOARD_SIZE
+from engines.board import OFF_BOARD, HOUSE_WATER, HOUSE_THREE_TRUTHS, HOUSE_REBIRTH, HOUSE_RE_ATUM, HOUSE_HORUS, HOUSE_REBIRTH, BOARD_SIZE
 from engines.rules import get_valid_moves
 
 
@@ -162,13 +162,9 @@ class GameState:
         new_vector = self._vector.set(from_pos, 0)
 
         # Handle bearing off
-        # if to_pos == OFF_BOARD:
-        #     # Piece removed from board - vector already updated
-        #     pass
-        
-        if to_pos >= BOARD_SIZE: 
-            to_pos = OFF_BOARD  
-            
+        if to_pos >= BOARD_SIZE:
+            to_pos = OFF_BOARD
+
         else:
             # Handle attack/swap
             if new_vector[to_pos] != 0:
@@ -223,8 +219,8 @@ class GameState:
             vector = vector.set(rebirth_pos, piece)
 
         else:
-    # كل البيوت في rebirth ممتلئة
-    # نحاول وضع القطعة في أقرب بيت فارغ قبل OFF_BOARD
+            # كل البيوت في rebirth ممتلئة
+            # نحاول وضع القطعة في أقرب بيت فارغ قبل OFF_BOARD
             rebirth_pos = HOUSE_REBIRTH
             while rebirth_pos >= 0 and vector[rebirth_pos] != 0:
                 rebirth_pos -= 1
