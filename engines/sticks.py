@@ -1,10 +1,16 @@
 import random
 
 def throw_sticks():
-    sticks = [random.choice([0, 1]) for _ in range(4)]  # 0=Round, 1=Flat
-    score = sum(sticks)
-
-    if score == 0:
-        return 5  # All round sides up = 5
-    return score
-
+    """
+    رمي العصي الأربعة في لعبة Senet باستخدام الاحتمالات الدقيقة مباشرة.
+    
+    Returns:
+        int: النتيجة (1، 2، 3، 4، أو 5)
+    """
+    # النتائج الممكنة
+    rolls = [1, 2, 3, 4, 5]
+    # الاحتمالات المقابلة لكل نتيجة
+    weights = [0.25, 0.375, 0.25, 0.0625, 0.0625]
+    
+    # اختيار نتيجة واحدة موزونة
+    return random.choices(rolls, weights=weights, k=1)[0]
