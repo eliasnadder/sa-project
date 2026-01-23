@@ -118,7 +118,7 @@ def _get_cell_display(val, idx):
     return f"{piece} "
 
 
-def print_board(board):
+def print_board(board, current_player_symbol=None):
     """
     Prints the board in the correct Boustrophedon (S-shape) layout with colors.
     Row 1: 1 -> 10 (Indices 0-9)
@@ -126,6 +126,17 @@ def print_board(board):
     Row 3: 21 -> 30 (Indices 20-29)
     """
     c = Colors
+
+    # حساب عدد القطع على اللوحة
+    pieces_x_on_board = sum(1 for cell in board if cell == 'X')
+    pieces_o_on_board = sum(1 for cell in board if cell == 'O')
+
+    # عدد القطع المخرجة (كل لاعب يبدأ بـ 7 قطع)
+    pieces_x_off = 7 - pieces_x_on_board
+    pieces_o_off = 7 - pieces_o_on_board
+
+    # تحديد لون اللاعب الحالي (إذا مررت current_player_symbol)
+    current_color = c.CYAN if current_player_symbol == 'X' else c.MAGENTA if current_player_symbol == 'O' else c.WHITE
 
     print(
         f"\n{c.BOLD}{c.YELLOW}═══════════════════ SENET BOARD ═══════════════════{c.RESET}")
@@ -180,6 +191,16 @@ def print_board(board):
     for i in range(20, 30):
         header3 += f"{c.DIM}{i+1:^5}{c.RESET}"
     print(header3)
+
+    # ══════════ الإضافة الجديدة: إحصائيات القطع ══════════
+    print(f"{c.BOLD}{c.YELLOW}═════════════════ PIECES STATUS ═════════════════{c.RESET}")
+    print(f" {c.CYAN}{c.BOLD}Player X:{c.RESET} {pieces_x_on_board} pieces on board ─ {c.GREEN}{pieces_x_off} pieces off (borne off){c.RESET}")
+    print(f" {c.MAGENTA}{c.BOLD}Player O:{c.RESET} {pieces_o_on_board} pieces on board ─ {c.GREEN}{pieces_o_off} pieces off (borne off){c.RESET}")
+
+    # إذا كان اللاعب الحالي معروف، نبرز دوره
+    if current_player_symbol:
+        print(
+            f"\n {current_color}{c.BOLD}▶ Current turn: Player {current_player_symbol}{c.RESET}")
 
     print(f"{c.BOLD}{c.YELLOW}════════════════════════════════════════════════════{c.RESET}\n")
 
