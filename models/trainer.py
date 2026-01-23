@@ -11,7 +11,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 # مع تقليم
 from players.ai_pruning import AI
 
-from evaluations.evaluation_ai_phased import SENET_AI_CONFIG
+from evaluations.evaluation_star1 import SENET_AI_CONFIG
 from engines.game_state_pyrsistent import GameState
 from engines.board import create_initial_board
 from engines.rules_silent import apply_move, check_win

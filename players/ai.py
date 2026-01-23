@@ -1,6 +1,6 @@
 import math
 from engines.game_state_pyrsistent import get_all_possible_rolls
-from evaluations.evaluation_ai import Evaluation
+from evaluations.evaluation import Evaluation
 # from static_evaluation import Evaluation
 from engines.board import *
 
