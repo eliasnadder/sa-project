@@ -18,6 +18,8 @@ def get_valid_moves(board, player, roll):
 
     for start_pos in piece_indices:
         target_pos = start_pos + roll
+        if (start_pos == HOUSE_THREE_TRUTHS and roll != 3) or (start_pos == HOUSE_RE_ATUM and roll != 2):
+            continue
 
         # --- RULE: Bearing Off (Exiting the Board) ---
         if target_pos >= BOARD_SIZE:
